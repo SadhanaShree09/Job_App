@@ -1,44 +1,41 @@
-import axios from 'axios';
-import { useEffect, useState } from 'react';
+import {useForm} from 'react-hook-form';
 
-const App = () => {
+function App() {
 
-  const[data,setData] = useState([]);
-  const[loading,setLoading] = useState(true);
-  const[error,setError] = useState(null);
+  const{ register, handleSubmit,formState : {errors} } = useForm();
 
-  useEffect(() => {
-    const fetchData = async () => {
-    try {
-      const response = await axios.get("https://jsonplaceholder.typicode.com//posts");
-        setData(response.data);
-        setLoading(false);
-      } 
-      
-      catch(err){
-        setError(err.message);
-        setLoading(false);
-      } 
-    }
-      fetchData();
-
-    } , []);
-
-    if(loading) 
-      return <div>Loading...</div>;
-    if(error)
-      return <div>Error : {error}</div>
+  const onSubmit = (data) => {
+    alert(`Form submitted Successfully with data : ${JSON.stringify(data)}`);
+  };
 
   return (
     <div>
-      <h1>Posts</h1>
-      <ul>
-      {data.map((post) => (
-        <li key={post.id}> {post.title}</li>
-      ))}
-      </ul>
+      <div>JOB APPLICATION FORM</div>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <input {
+          ...register("firstName",{required : true})
+        } 
+        placeholder='Enter the First Name'
+        />
+        {errors.firstName && <span>This filed is Required</span>}
+        <br />
+
+        <input {
+          ...register("lastName",{required : true})
+        }
+        placeholder='Enter the lastName' 
+        />
+        {errors.lastName && <span>This filed is Required</span>}
+        <br />
+        <select {...register('gender')}>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+        </select> 
+        <br /><br />
+        <button type='submit'>Submit</button>
+      </form>
     </div>
-  );
-};  
+  )
+}
 
 export default App;
