@@ -1,8 +1,8 @@
-import {useForm} from 'react-hook-form';
+import {useForm , Controller} from 'react-hook-form';
 
 function App() {
 
-  const{ register, handleSubmit,formState : {errors} } = useForm();
+  const{ control, handleSubmit } = useForm();
 
   const onSubmit = (data) => {
     alert(`Form submitted Successfully with data : ${JSON.stringify(data)}`);
@@ -11,27 +11,57 @@ function App() {
   return (
     <div>
       <div>JOB APPLICATION FORM</div>
+      <br />
       <form onSubmit={handleSubmit(onSubmit)}>
-        <input {
-          ...register("firstName",{required : true})
-        } 
-        placeholder='Enter the First Name'
-        />
-        {errors.firstName && <span>This filed is Required</span>}
-        <br />
 
-        <input {
-          ...register("lastName",{required : true})
-        }
-        placeholder='Enter the lastName' 
+        <Controller
+            name = "email"
+            control = {control}
+            rules={
+              {
+                required : "Email is required",
+                pattern : {
+                  value :  /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,4}$/,
+                  message : " Enter valid email.Example : admin123@gmail.com"
+                }
+              }
+            }
+            render={({field,fieldState:{error}})=>(
+            <>
+              <input 
+              {...field}
+              type='email'
+              placeholder='Enter email address'
+              />
+              {error && <span>{error.message}</span>}
+            </>
+            )}
         />
-        {errors.lastName && <span>This filed is Required</span>}
-        <br />
-        <select {...register('gender')}>
-          <option value="male">Male</option>
-          <option value="female">Female</option>
-        </select> 
-        <br /><br />
+          <br /><br />
+        <Controller
+            name="password"
+            control={control}
+            rules={
+              {
+                required : "Password is required",
+                pattern : {
+                  value : /^(?=.*[!@#$%^&*])/,
+                  message : "Password must contain special charc"
+                }
+              }
+            } 
+            render={({field,fieldState : {error}})=>(
+              <>
+                <input 
+                {...field}
+                type='password'
+                placeholder='Password'
+                />
+                {error && <span>{error.message}</span>}
+              </>
+            )}
+          />
+          <br /><br />
         <button type='submit'>Submit</button>
       </form>
     </div>
