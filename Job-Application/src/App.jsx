@@ -1,70 +1,30 @@
-import {useForm , Controller} from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 
 function App() {
 
-  const{ control, handleSubmit } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState : {errors},
+  } = useForm();
 
-  const onSubmit = (data) => {
-    alert(`Form submitted Successfully with data : ${JSON.stringify(data)}`);
-  };
+  const onSubmit=(data) =>{
+    console.log('Form Data : ',data);
+    alert(`Job Application submitted Successfully!!\n${JSON.stringify(data,null,2)}`);
+  }
 
   return (
-    <div>
-      <div>JOB APPLICATION FORM</div>
-      <br />
-      <form onSubmit={handleSubmit(onSubmit)}>
-
-        <Controller
-            name = "email"
-            control = {control}
-            rules={
-              {
-                required : "Email is required",
-                pattern : {
-                  value :  /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,4}$/,
-                  message : " Enter valid email.Example : admin123@gmail.com"
-                }
-              }
-            }
-            render={({field,fieldState:{error}})=>(
-            <>
-              <input 
-              {...field}
-              type='email'
-              placeholder='Enter email address'
-              />
-              {error && <span>{error.message}</span>}
-            </>
-            )}
-        />
-          <br /><br />
-        <Controller
-            name="password"
-            control={control}
-            rules={
-              {
-                required : "Password is required",
-                pattern : {
-                  value : /^(?=.*[!@#$%^&*])/,
-                  message : "Password must contain special charc"
-                }
-              }
-            } 
-            render={({field,fieldState : {error}})=>(
-              <>
-                <input 
-                {...field}
-                type='password'
-                placeholder='Password'
-                />
-                {error && <span>{error.message}</span>}
-              </>
-            )}
-          />
-          <br /><br />
-        <button type='submit'>Submit</button>
-      </form>
-    </div>
+    <form onSubmit={handleSubmit(onSubmit)}>
+    <label>Name : </label>
+    <input
+    {...register('Name',{required: 'Name is required'})}
+    placeholder='Enter your name'
+    />
+    {errors.Name && (
+      <p className='text-red-500'>{errors.Name.message}</p>
+    )}
+    <button type='Submit'>Submit</button>
+    </form>
   )
 }
 
